@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics;
 
-namespace clockify_core
+namespace Clockify_API_Client_Core.UserClasses
 {
+    [DebuggerDisplay("{Name}")]
     public partial class User
     {
         [JsonProperty("id")]

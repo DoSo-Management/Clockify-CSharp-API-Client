@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Clockify_API_Client_Core.UserClasses;
+using Newtonsoft.Json;
 
-namespace clockify_core
+namespace Clockify_API_Client_Core.UserClasses
 {
     public partial class Membership
     {

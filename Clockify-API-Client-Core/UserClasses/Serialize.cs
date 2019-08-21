@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace clockify_core
+namespace Clockify_API_Client_Core.UserClasses
 {
     public static class Serialize
     {

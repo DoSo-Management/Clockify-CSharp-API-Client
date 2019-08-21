@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace clockify_core
+namespace Clockify_API_Client_Core.UserClasses
 {
     internal static class Converter
     {
@@ -12,8 +12,8 @@ namespace clockify_core
             DateParseHandling = DateParseHandling.None,
             Converters =
             {
-                MembershipStatusConverter.Singleton,
-                MembershipTypeConverter.Singleton,
+                //MembershipStatusConverter.Singleton,
+                //MembershipTypeConverter.Singleton,
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             },
         };
