@@ -13,6 +13,7 @@ namespace Clockify_API_Client_Core.PersistentObjects
         public DateTime start { get; set; }
         public DateTime? end { get; set; }
         public string duration { get; set; }
+        [Size(-1)]
         public string description { get; set; }
         public List<object> tagIds { get; set; }
         public string userId { get; set; }

@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Threading;
 
 namespace Clockify_API_Client_Core.TesterConsole
 {
@@ -17,21 +18,35 @@ namespace Clockify_API_Client_Core.TesterConsole
 
         static async Task Main(string[] args)
         {
+
+
             using (var client = new ClockifyAPIClient("XEBvLLB5hxt3UkE7"))
             {
-                var connectionString = "Integrated Security=SSPI;Pooling=false;Data Source=localhost;Initial Catalog=ClockifyDB";
+                var connectionString = "Integrated Security=SSPI;Pooling=false;Data Source=localhost;Initial Catalog=gitlab_new";
                 XpoDefault.DataLayer = XpoDefault.GetDataLayer(connectionString, AutoCreateOption.DatabaseAndSchema);
 
-                var result = await client.GetDataFromAPI<User[]>($"v1/workspace/{workplaceId}/users");
-
-                foreach (var user in result.DeserializedResponseResult.Value)
+                while (true)
                 {
-                    CreateOrUpdate<ClockifyUser>(user);
-                    var times = await client.GetDataFromAPI<TimeEntity[]>($"v1/workspaces/{workplaceId}/user/{user.Id}/time-entries");
-                    times.DeserializedResponseResult.Value.ToList().ForEach(x => CreateOrUpdate<ClockifyTime>(x));
-                }
+                    try
+                    {
 
-                Console.ReadLine();
+                        var result = await client.GetDataFromAPI<User[]>($"v1/workspace/{workplaceId}/users");
+
+                        foreach (var user in result.DeserializedResponseResult.Value)
+                        {
+                            CreateOrUpdate<ClockifyUser>(user);
+                            var times = await client.GetDataFromAPI<TimeEntity[]>($"v1/workspaces/{workplaceId}/user/{user.Id}/time-entries?start={DateTime.Now.AddDays(-7).ToString("yyyy-MM-ddThh:mm:ssZ")}");
+                            times.DeserializedResponseResult.Value.ToList().ForEach(x => CreateOrUpdate<ClockifyTime>(x));
+                        }
+
+                        Console.WriteLine(DateTime.Now);
+                        Thread.Sleep(TimeSpan.FromMinutes(1));
+                    }
+                    catch (Exception ex)
+                    {
+                        
+                    }
+                }
             }
         }
 
