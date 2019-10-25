@@ -27,6 +27,8 @@ namespace Clockify_API_Client_Core.TesterConsole
                 var task = await Client.GetAsync(address);
                 var jsonString = await task.Content.ReadAsStringAsync();
 
+                //var b = jsonString;
+
                 try { return new Response<T>(jsonString, Result.Ok(JsonConvert.DeserializeObject<T>(jsonString, Converter.Settings)), Maybe<Exception>.None); }
                 catch (Exception generalException) { return new Response<T>(jsonString, Result.Fail<T>(generalException.Message + "\r\n".Times(2)), generalException); }
             }

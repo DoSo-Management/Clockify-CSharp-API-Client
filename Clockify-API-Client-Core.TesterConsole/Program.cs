@@ -9,6 +9,7 @@ using System;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
+using System.Reactive.Linq;
 
 namespace Clockify_API_Client_Core.TesterConsole
 {
@@ -31,12 +32,18 @@ namespace Clockify_API_Client_Core.TesterConsole
                     {
 
                         var result = await client.GetDataFromAPI<User[]>($"v1/workspace/{workplaceId}/users");
+                        var projects = await client.GetDataFromAPI<ProjectEntity[]>($"v1/workspaces/{workplaceId}/projects");
+
+                        if (projects.DeserializedResponseResult.Value != null)
+                            foreach (var item in projects.DeserializedResponseResult.Value)
+                                CreateOrUpdate<ClockifyProject>(item);
 
                         foreach (var user in result.DeserializedResponseResult.Value)
                         {
                             CreateOrUpdate<ClockifyUser>(user);
-                            var times = await client.GetDataFromAPI<TimeEntity[]>($"v1/workspaces/{workplaceId}/user/{user.Id}/time-entries?start={DateTime.Now.AddDays(-7).ToString("yyyy-MM-ddThh:mm:ssZ")}");
-                            times.DeserializedResponseResult.Value.ToList().ForEach(x => CreateOrUpdate<ClockifyTime>(x));
+                            var times = await client.GetDataFromAPI<TimeEntity[]>($"v1/workspaces/{workplaceId}/user/{user.Id}/time-entries?page-size=500&start={DateTime.Now.AddDays(-30).ToString("yyyy-MM-ddThh:mm:ssZ")}");
+                            var a = times.DeserializedResponseResult.Value.ToList();
+                            a.ForEach(x => CreateOrUpdate<ClockifyTime>(x));
                         }
 
                         Console.WriteLine(DateTime.Now);
@@ -44,7 +51,7 @@ namespace Clockify_API_Client_Core.TesterConsole
                     }
                     catch (Exception ex)
                     {
-                        
+
                     }
                 }
             }
